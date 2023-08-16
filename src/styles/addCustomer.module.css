@@ -1,0 +1,137 @@
+.header{
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.backBtn{
+    position: absolute;
+    top: 80px;
+    right: 60px;
+}
+
+.backBtn button{
+    background-color: #4d2ad7;
+    color: #fff;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.backBtn button:hover{
+    background-color: #fff;
+    color: #4d2ad7;
+    border: 1px solid #4d2ad7;
+}
+
+.formDiv{
+    margin: 120px 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.formDiv form{
+    width: 500px;
+    border: 1px solid #4d2ad7;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 40px 20px;
+    border-radius: 8px;
+}
+
+.formDiv form label{
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.formDiv form input{
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    margin-bottom: 30px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.formDiv form input:focus{
+    outline: none;
+}
+
+.formDiv form textarea{
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    margin-bottom: 40px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.formDiv form .submitBtn{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.formDiv form .submitBtn button{
+    background-color: #4d2ad7;
+    color: #fff;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.formDiv form .submitBtn button:hover{
+    background-color: #fff;
+    color: #4d2ad7;
+    border: 1px solid #4d2ad7;
+}
+
+.formDiv form .errorDiv{
+    width: 100%;
+    text-align: center;
+    color: red;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    margin-top: 40px;
+}
+
+@media (max-width: 768px){
+    .formDiv{
+        margin: 100px 20px;
+    }
+
+    .formDiv form{
+        width: 60%;
+    }
+
+    .formDiv form textarea{
+        width: 80%;
+    }
+}

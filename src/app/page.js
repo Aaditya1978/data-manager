@@ -1,95 +1,127 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { BiUser } from "react-icons/bi";
+import { MdOutlineEmail, MdOutlineLocalPhone, MdAdd } from "react-icons/md";
+import axios from "axios";
+import { BounceLoader } from "react-spinners";
+import styles from "../styles/page.module.css";
 
 export default function Home() {
+  const router = useRouter();
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+
+  useEffect(() => {
+    const getCustomers = async () => {
+      const { data } = await axios.get("/api/customer");
+      setCustomers(data.customers);
+    };
+    getCustomers()
+      .then(() => setLoading(false))
+      .catch((err) => console.log(err));
+  }, []);
+
+  const handleModalShow = (id) => {
+    setShowModal(true);
+    setDeleteId(id);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setDeleteId("");
+  };
+
+  const handleAddCustomer = () => {
+    router.push("/add_customer");
+  };
+
+  const handleDeleteCustomer = async (id) => {
+    const res = await axios.delete("/api/customer", { data: { id } });
+
+    if (res.status === 200) {
+      const newCustomers = customers.filter((customer) => customer._id !== id);
+      setCustomers(newCustomers);
+      setShowModal(false);
+    } else {
+      setError(res.data.message);
+      setShowModal(false);
+    }
+  };
+
+  const handleViewCustomer = (id) => {
+    router.push(`/view_customer/${id}`);
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main>
+      {showModal && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <h3>Are you sure you want to delete this customer?</h3>
+            <div className={styles.actions}>
+              <button
+                className={styles.yes}
+                onClick={() => handleDeleteCustomer(deleteId)}
+              >
+                Yes
+              </button>
+              <button className={styles.no} onClick={handleModalClose}>
+                No
+              </button>
+            </div>
+          </div>
         </div>
+      )}
+
+      <div className={styles.header}>Welcome to Data Manager</div>
+
+      <div className={styles.addBtn}>
+        <button onClick={handleAddCustomer}>
+          <MdAdd className={styles.icon} /> Add Customer
+        </button>
       </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      {loading ? (
+        <div className={styles.loading}>
+          <BounceLoader color="#4d2ad7" size={100} />
+        </div>
+      ) : (
+        <div className={styles.cardList}>
+          {customers.map((customer) => (
+            <div className={styles.card} key={customer._id}>
+              <h2>
+                <BiUser className={styles.icon} /> Name - {customer.name}
+              </h2>
+              <h4>
+                <MdOutlineEmail className={styles.icon} /> Email -{" "}
+                {customer.email}
+              </h4>
+              <h4>
+                <MdOutlineLocalPhone className={styles.icon} /> Phone no. -{" "}
+                {customer.phone}
+              </h4>
+              <div className={styles.actions}>
+                <button
+                  className={styles.view}
+                  onClick={() => handleViewCustomer(customer._id)}
+                >
+                  View
+                </button>
+                <button
+                  className={styles.delete}
+                  onClick={() => handleModalShow(customer._id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </main>
-  )
+  );
 }
